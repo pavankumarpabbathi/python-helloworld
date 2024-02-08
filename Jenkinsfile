@@ -8,7 +8,8 @@ pipeline {
   stages {
     stage('Cloning our Git') {
       steps {
-        git 'https://github.com/pavankumarpabbathi/python-helloworld.git?ref=main'
+        git branch: 'main',
+            url: 'https://github.com/pavankumarpabbathi/python-helloworld.git'  
       }
     }
     stage('Building image') {
