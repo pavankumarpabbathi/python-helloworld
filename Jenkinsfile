@@ -8,17 +8,17 @@ pipeline {
   stages {
     stage('Cloning our Git') {
       steps {
-        git 'https://github.com/pavankumarpabbathi/python-helloworld.git'
+        git 'https://github.com/pavankumarpabbathi/python-helloworld.git?ref=main'
       }
     }
-    stage('Building our image') {
+    stage('Building image') {
       steps {
         script {
           dockerImage = docker.build registry + ":$BUILD_NUMBER"
         }
       }
     }
-    stage('Deploy our image') {
+    stage('Push image to Dockerhub') {
       steps {
         script {
           docker.withRegistry('', registryCredential) {
