@@ -1,7 +1,7 @@
 pipeline {
   environment {
     registry = "pavankumarpabbathe12/helloworld-app"
-    registryCredential = 'dockercred'
+    DOCKERHUB_CREDENTIALS = credentials('dockercred')
     dockerImage = ''
   }
   agent any
@@ -12,20 +12,20 @@ pipeline {
             url: 'https://github.com/pavankumarpabbathi/python-helloworld.git'  
       }
     }
+    stage('Login to Docker Hub') {      	
+       steps{                       	
+         sh 'echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'                		
+         echo 'Login Completed'      
+       }           
+    }
     stage('Building image') {
       steps {
-        script {
-          dockerImage = docker.build registry + ":$BUILD_NUMBER"
-        }
+        sh "docker build -t $registry:$BUILD_NUMBER ."
       }
     }
     stage('Push image to Dockerhub') {
       steps {
-        script {
-          docker.withRegistry('', registryCredential) {
-            dockerImage.push()
-          }
-        }
+        sh "docker push $registry:$BUILD_NUMBER"
       }
     }
     stage('Cleaning up') {
